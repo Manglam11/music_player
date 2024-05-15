@@ -168,6 +168,7 @@ const deleteSong = (id) => {
 
     resetButton.addEventListener("click", () => {
       userData.songs = [...allSongs];
+
       renderSongs(sortSongs());
       setPlayButtonAccessibleText();
       resetButton.remove();
@@ -248,6 +249,22 @@ previousButton.addEventListener("click", playPreviousSong);
 
 shuffleButton.addEventListener("click", shuffle);
 
+audio.addEventListener("ended", () => {
+  const currentSongIndex = getCurrentSongIndex();
+  const nextSongExists = userData?.songs[currentSongIndex + 1] !== undefined;
+
+  if (nextSongExists) {
+    playNextSong();
+  } else {
+    userData.currentSong = null;
+    userData.songCurrentTime = 0;
+    pauseSong();
+    setPlayerDisplay();
+    highlightCurrentSong();
+    setPlayButtonAccessibleText();
+  }
+});
+
 const sortSongs = () => {
   userData?.songs.sort((a, b) => {
     if (a.title < b.title) {
@@ -265,3 +282,4 @@ const sortSongs = () => {
 };
 
 renderSongs(sortSongs());
+setPlayButtonAccessibleText();
